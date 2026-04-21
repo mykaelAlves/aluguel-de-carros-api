@@ -32,7 +32,7 @@ pub async fn login(
     state.read().await.usuarios
         .iter()
         .find(|u| u.email == usuario_login.email && u.pwd_hash == rcv_hashed_pwd)
-        .map(|_| (StatusCode::OK, "tokenFERA@"))
+        .map(|u| (StatusCode::OK, u.role.to_token()))
         .ok_or(StatusCode::UNAUTHORIZED)
 }
 

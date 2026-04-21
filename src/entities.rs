@@ -1,9 +1,20 @@
 use serde::{Serialize, Deserialize};
 
+use crate::{EXPECTED_ADMIN_TOKEN, EXPECTED_USER_TOKEN};
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub enum Role {
     Cliente,
     Administrador,
+}
+
+impl Role {
+    pub fn to_token(&self) -> &'static str {
+        match self {
+            Role::Cliente => EXPECTED_USER_TOKEN,
+            Role::Administrador => EXPECTED_ADMIN_TOKEN,
+        }
+    }
 }
 
 #[derive(Serialize, Clone, Debug, PartialEq, Eq, Hash)]

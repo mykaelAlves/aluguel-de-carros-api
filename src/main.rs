@@ -7,6 +7,9 @@ use axum::{
         any, delete, get, patch, post, put
     }
 };
+use tracing::{info, warn, debug, error};
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
 use aluguel_de_carros_api::{AppState, entities::{self, Produto}, middleware, routes};
 
 type StdError = Box<dyn std::error::Error>;
@@ -15,7 +18,15 @@ const IP_ADDR: &str = "0.0.0.0:9876";
 
 #[tokio::main]
 async fn main() -> Result<(), StdError> {
-    println!("Iniciando o servidor...");
+    tracing_subscriber::registry()
+        .with(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| "aluguel_de_carros_api=info".into())
+        )
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+
+    info!("Iniciando o servidor...");
 
     let shared_state = Arc::new(RwLock::new(AppState::default()));
 
@@ -51,7 +62,7 @@ async fn main() -> Result<(), StdError> {
         .route("/produtos/{sku}/delete", delete(routes::produto_delete))
         .route_layer(axum::middleware::from_fn(middleware::auth_adm_middleware));
 
-    println!("Rotas criadas.");
+    info!("Rotas criadas.");
 
     let api = Router::new()
         .merge(public_routes)
@@ -60,7 +71,7 @@ async fn main() -> Result<(), StdError> {
         .with_state(shared_state);
 
     let listener = tokio::net::TcpListener::bind(IP_ADDR).await?;
-    println!("Servidor rodando em {}", listener.local_addr()?);
+    info!("Servidor rodando em {}...", listener.local_addr()?);
 
     axum::serve(listener, api).await?;
 

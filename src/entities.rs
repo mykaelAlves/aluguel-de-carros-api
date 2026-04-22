@@ -1,4 +1,5 @@
-use serde::{Serialize, Deserialize};
+use chrono::{Date, DateTime, FixedOffset, Utc};
+use serde::{Deserialize, Serialize};
 
 use crate::{EXPECTED_ADMIN_TOKEN, EXPECTED_USER_TOKEN};
 
@@ -54,12 +55,39 @@ pub struct Produto {
     pub disponivel: bool,
 }
 
+pub struct Locacao {
+    pub usuario_id: u32,
+    pub produto_sku: SKU,
+    pub tem_multa: bool,
+    pub valor_multa: f64,
+    pub data_locacao: DateTime<FixedOffset>,
+    pub data_devolucao: DateTime<FixedOffset>,
+}
+
+impl Locacao {
+    const TIMEZONE_OFFSET: i32 = -3 * 3600; // UTC-3 (BRT)
+
+    pub fn new(usuario_id: u32, produto_sku: SKU) -> Self {
+        let tz = FixedOffset::east_opt(Self::TIMEZONE_OFFSET).unwrap();
+        let now = Utc::now().with_timezone(&tz);
+        Locacao {
+            usuario_id,
+            produto_sku,
+            tem_multa: false,
+            valor_multa: 0.0,
+            data_locacao: now,
+            data_devolucao: now + chrono::Duration::days(7),
+        }
+    }
+}
+
 impl Produto {
     pub fn new(marca: &str, modelo: &str, ano: u16, cor: &str) -> Self {
         let filtered_marca = marca.replace(" ", "");
         let filtered_modelo = modelo.replace(" ", "");
 
-        let sku = format!("{}_{}_{}_{}", filtered_marca, filtered_modelo, ano, cor);
+        let sku =
+            format!("{}_{}_{}_{}", filtered_marca, filtered_modelo, ano, cor);
         Produto {
             sku,
             marca: marca.to_string(),

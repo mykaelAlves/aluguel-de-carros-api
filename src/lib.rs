@@ -1,6 +1,6 @@
-pub mod routes;
-pub mod middleware;
 pub mod entities;
+pub mod middleware;
+pub mod routes;
 
 pub const EXPECTED_USER_TOKEN: &str = "tokenFERA@";
 pub const EXPECTED_ADMIN_TOKEN: &str = "adminTokenFERA@";

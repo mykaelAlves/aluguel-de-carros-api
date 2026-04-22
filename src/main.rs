@@ -7,11 +7,11 @@ use aluguel_de_carros_api::{
 };
 use axum::{
     Router,
-    routing::{any, delete, get, patch, post, put},
+    routing::{any, delete, get, post, put},
 };
 use sha2::Digest;
 use tokio::{self, sync::RwLock};
-use tracing::{debug, error, info, warn};
+use tracing::info;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 type StdError = Box<dyn std::error::Error>;

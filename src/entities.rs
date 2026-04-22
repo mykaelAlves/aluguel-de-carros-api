@@ -1,4 +1,4 @@
-use chrono::{Date, DateTime, FixedOffset, Utc};
+use chrono::{DateTime, FixedOffset, Utc};
 use serde::{Deserialize, Serialize};
 
 use crate::{EXPECTED_ADMIN_TOKEN, EXPECTED_USER_TOKEN};

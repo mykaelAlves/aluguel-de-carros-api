@@ -1,4 +1,4 @@
-**(README foi gerado pelo Gemini)**
+**(Este README.md foi gerado pelo Gemini)**
 
 # Aluguel de Carros API
 
